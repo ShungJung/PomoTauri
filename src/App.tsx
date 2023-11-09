@@ -23,7 +23,6 @@ function App() {
 
     // TODO Add sounds to notification.
     // TODO Save settings in storage.
-    // TODO Add a reset time button.
 
     function handleModeChange() {
         if (mode == Mode.Display) {
@@ -66,6 +65,12 @@ function App() {
         }
 
         setStarted(!started)
+    }
+
+    function handleReset () {
+        clearInterval(intervalID)
+        setTime(slots[currentSlot].time)
+        setStarted(false)
     }
 
     function handleSlotChange(index: number) {
@@ -143,6 +148,7 @@ function App() {
                 started={started}
                 mode={mode}
                 handleStartChange={handleStartChange}
+                handleReset={handleReset}
             />
 
         </>
