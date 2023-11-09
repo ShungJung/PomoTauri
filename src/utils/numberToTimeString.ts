@@ -3,7 +3,7 @@ function numberToTimeString(num: number): string {
     const minutes = Math.floor(num / 60) % 60
     const hours = Math.floor(num / 3600) % 60
 
-    let TimeString: string = ""
+    let TimeString = ""
 
     if (hours != 0) {
         TimeString += hours.toString() + ":"

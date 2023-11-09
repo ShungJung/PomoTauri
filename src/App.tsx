@@ -1,131 +1,152 @@
-import { useEffect, useState } from "react";
-import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification';
+import { useState } from "react";
 
-// import clockIcon from "/icons/clock.svg";
-// import slotsIcon from "/icons/slots.svg";
-// import heartIcon from "/icons/heart.svg";
+import editIcon from "/icons/edit.svg";
+import cancelIcon from "/icons/cancel.svg";
 
 import Slot from "./types/Slot";
 import TimerDisplay from "./components/TimerDisplay";
 import SlotsBar from "./components/SlotsBar";
 import StatusSetter from "./components/StatusSetter";
+import Mode from "./types/Mode";
+import notify from "./utils/notify";
 
 function App() {
-  const [slots, setSlots] = useState<Slot[]>([
-    { name: "Work", time: 25 },
-    { name: "Rest", time: 5 },
-  ]);
-  const [currentSlot, setCurrentSlot] = useState(0)
-  const [intervalID, setIntervalID] = useState(0)
-  const [time, setTime] = useState(0)
+    const [slots, setSlots] = useState<Slot[]>([
+        { name: "Work", time: 25 },
+        { name: "Rest", time: 5 },
+    ]);
+    const [currentSlot, setCurrentSlot] = useState(0)
+    const [intervalID, setIntervalID] = useState(0)
+    const [time, setTime] = useState(slots[currentSlot].time)
+    const [started, setStarted] = useState(false)
+    const [mode, setMode] = useState<Mode>(Mode.Display)
 
-  const [started, setStarted] = useState(false)
+    // TODO Add sounds to notification.
+    // TODO Save settings in storage.
+    // TODO Add a reset time button.
 
-  // TODO CRUD slots.
-  // TODO Add sounds to notification.
-  // TODO Save settings in storage.
-  // TODO Add eslint.
-  // TODO Have Fun :).
-
-  useEffect(() => {
-    setSlots([
-      { name: "Work", time: 25 },
-      { name: "Rest", time: 5 },
-    ])
-    setTime(slots[currentSlot].time)
-  }, [])
-
-
-  async function Notify(message: string) {
-    let permissionGranted = await isPermissionGranted();
-
-    if (!permissionGranted) {
-      const permission = await requestPermission();
-      permissionGranted = permission === 'granted';
+    function handleModeChange() {
+        if (mode == Mode.Display) {
+            setMode(Mode.Edit)
+            clearInterval(intervalID)
+            setStarted(false)
+            setTime(slots[currentSlot].time)
+        } else {
+            setMode(Mode.Display)
+        }
     }
 
-    if (permissionGranted) {
-      sendNotification(message);
+    function handleStartChange() {
+        if (!started) {
+            const id = setInterval(() => {
+                setTime(prevTime => {
+                    if (prevTime == 0) {
+                        setCurrentSlot(prevCurrentSlot => {
+                            let newCurrentSlot = prevCurrentSlot + 1
+
+                            if (prevCurrentSlot == slots.length - 1) {
+                                newCurrentSlot = 0
+                            }
+
+                            console.log(slots[newCurrentSlot].name)
+
+                            void notify(slots[newCurrentSlot].name)
+                            setTime(slots[newCurrentSlot].time)
+
+                            return newCurrentSlot
+                        })
+                    }
+                    return prevTime - 1
+                })
+            }, 1000)
+
+            setIntervalID(id)
+        } else {
+            clearInterval(intervalID)
+        }
+
+        setStarted(!started)
     }
-  }
 
-  function handleStartChange() {
-    if (!started) {
-      const id = setInterval(() => {
-        setTime(prevTime => {
-          if (prevTime == 0) {
-            setCurrentSlot(prevCurrentSlot => {
-              let newCurrentSlot = prevCurrentSlot + 1
-
-              if (prevCurrentSlot == slots.length - 1) {
-                newCurrentSlot = 0
-              }
-
-              Notify(slots[newCurrentSlot].name)
-              setTime(slots[newCurrentSlot].time)
-
-              return newCurrentSlot
-            })
-          }
-          return prevTime - 1
-        })
-      }, 1000)
-
-      setIntervalID(id)
-    } else {
-      clearInterval(intervalID)
+    function handleSlotChange(index: number) {
+        setCurrentSlot(index)
+        clearInterval(intervalID)
+        setStarted(false)
+        setTime(slots[index].time)
     }
 
-    setStarted(!started)
-  }
+    function handleCreateSlot(newSlot: Slot) {
+        const slotsArray = [...slots]
 
-  function handleSlotChange(index: number) {
-    setCurrentSlot(index)
-    setTime(slots[index].time)
-  }
+        slotsArray.push(newSlot)
 
-  return (
-    <>
-      <SlotsBar
-        slots={slots}
-        currentSlot={currentSlot}
-        handleSlotChange={handleSlotChange}
-      />
+        setSlots(slotsArray)
+    }
 
-      <TimerDisplay time={time} />
+    function handleUpdateSlot(updatedTime: number) {
+        const slotsArray = [...slots]
 
-      <StatusSetter
-        started={started}
-        handleStartChange={handleStartChange}
-      />
+        slotsArray[currentSlot].time = updatedTime
 
-      {/* <div className="
-        flex flex-row gap-3
-        text-3xl
-      ">
-        <button>
-          <img 
-            src={slotsIcon}
-            alt="Slots Settings" 
-            className="w-8 h-8"
-          />
-        </button>
-        <button>
-          <img 
-            src={clockIcon}
-            alt="Clock Settings" 
-            className="w-8 h-8"
-          />
-        </button>
-        <img 
-          src={heartIcon}
-          alt="Cool Heart" 
-          className="w-8 h-8"
-        />
-      </div> */}
-      <div></div>
-    </>
-  )
+        setSlots(slotsArray)
+    }
+
+    function handleDeleteSlot(index: number) {
+        const slotsArray = [...slots]
+
+        if (slotsArray.length > 1) {
+            slotsArray.splice(index, 1)
+            setSlots(slotsArray)
+        }
+
+        if (index == currentSlot) {
+            setCurrentSlot(0)
+            clearInterval(intervalID)
+            setStarted(false)
+            setTime(slotsArray[0].time)
+        }
+    }
+
+    return (
+        <>
+            <button onClick={handleModeChange}>
+                {mode == Mode.Display
+                    ?<img 
+                        src={editIcon} 
+                        className="w-10 h-10"
+                        alt="Edit" 
+                    />
+                    :<img 
+                        src={cancelIcon} 
+                        className="w-10 h-10"
+                        alt="Cancel" 
+                    />
+                }
+            </button>
+
+            <SlotsBar
+                slots={slots}
+                currentSlot={currentSlot}
+                mode={mode}
+                handleSlotChange={handleSlotChange}
+                handleCreateSlot={handleCreateSlot}
+                handleDeleteSlot={handleDeleteSlot}
+            />
+
+            <TimerDisplay 
+                time={time}
+                mode={mode}
+                handleUpdateSlot={handleUpdateSlot}
+            />
+
+            <StatusSetter
+                started={started}
+                mode={mode}
+                handleStartChange={handleStartChange}
+            />
+
+        </>
+    )
 }
 
 export default App
