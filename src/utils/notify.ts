@@ -1,3 +1,4 @@
+import { invoke } from "@tauri-apps/api";
 import { isPermissionGranted, requestPermission, sendNotification } from "@tauri-apps/api/notification";
 
 async function notify(message: string) {
@@ -10,6 +11,11 @@ async function notify(message: string) {
 
     if (permissionGranted) {
         sendNotification(message);
+        try {
+            await invoke("sing_notification_sound")
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
 

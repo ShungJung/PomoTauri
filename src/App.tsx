@@ -22,7 +22,6 @@ function App() {
     const [mode, setMode] = useState<Mode>(Mode.Display)
 
     // TODO Add sounds to notification.
-    // TODO Save settings in storage.
 
     function handleModeChange() {
         if (mode == Mode.Display) {
@@ -46,8 +45,6 @@ function App() {
                             if (prevCurrentSlot == slots.length - 1) {
                                 newCurrentSlot = 0
                             }
-
-                            console.log(slots[newCurrentSlot].name)
 
                             void notify(slots[newCurrentSlot].name)
                             setTime(slots[newCurrentSlot].time)
