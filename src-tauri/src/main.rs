@@ -25,5 +25,5 @@ fn sing_notification_sound() {
 
   // The sound plays in a separate audio thread,
   // so we need to keep the main thread alive while it's playing.
-  std::thread::sleep(std::time::Duration::from_secs(1));
+  std::thread::sleep(std::time::Duration::from_secs(1)); // Make it non-blocking
 }
