@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react";
-
-import editIcon from "/icons/edit.svg";
-import cancelIcon from "/icons/cancel.svg";
+import { useState } from "react";
 
 import Slot from "./types/Slot";
 import TimerDisplay from "./components/TimerDisplay";
@@ -9,6 +6,7 @@ import SlotsBar from "./components/SlotsBar";
 import StatusSetter from "./components/StatusSetter";
 import Mode from "./types/Mode";
 import notify from "./utils/notify";
+import EditButton from "./components/EditButton";
 
 
 function App() {
@@ -17,7 +15,7 @@ function App() {
         { name: "Rest", time: 5 },
     ]);
     const [currentSlot, setCurrentSlot] = useState(0)
-    const [intervalID, setIntervalID] = useState(0)
+    const [intervalID, setIntervalID] = useState<NodeJS.Timeout>()
     const [time, setTime] = useState(slots[currentSlot].time)
     const [started, setStarted] = useState(false)
     const [mode, setMode] = useState<Mode>(Mode.Display)
@@ -109,20 +107,21 @@ function App() {
 
     return (
         <>
-            <button onClick={handleModeChange}>
-                {mode == Mode.Display
-                    ?<img 
-                        src={editIcon} 
-                        className="w-10 h-10"
-                        alt="Edit" 
-                    />
-                    :<img 
-                        src={cancelIcon} 
-                        className="w-10 h-10"
-                        alt="Cancel" 
-                    />
-                }
-            </button>
+            <div className="flex flex-row gap-10">
+                <EditButton 
+                    mode={mode}
+                    handleModeChange={handleModeChange}
+                />
+                {/* 
+                    TODO Browan, 
+
+                    Create a new file in Components called the Dark Mode button or the theme switcher or whateever. (end in tsx)
+                    In that file follow the patterns of the other tsx files in that folder and create the EditButton function.
+                    In that file you program the logic for switching themes.
+
+                    Goodluck, Shung Jung
+                */}
+            </div>
 
             <SlotsBar
                 slots={slots}

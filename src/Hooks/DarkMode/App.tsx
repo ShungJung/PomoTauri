@@ -43,48 +43,64 @@
 // // Invoke theme check on intial load
 // themeCheck();
 
-// // On page load or when changing themes, best to add inline in `head` to avoid FOUC
-// if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-//     document.documentElement.classList.add('dark')
-// } else {
-//     document.documentElement.classList.remove('dark')
-// }
+// On page load or when changing themes, best to add inline in `head` to avoid FOUC
+if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark')
+} else {
+    document.documentElement.classList.remove('dark')
+}
   
-// // Whenever the user explicitly chooses light mode
-// localStorage.theme = 'light'
+// Whenever the user explicitly chooses light mode
+localStorage.theme = 'light'
   
-// // Whenever the user explicitly chooses dark mode
-// localStorage.theme = 'dark'
+// Whenever the user explicitly chooses dark mode
+localStorage.theme = 'dark'
   
-// // Whenever the user explicitly chooses to respect the OS preference
-// localStorage.removeItem('theme')
+// Whenever the user explicitly chooses to respect the OS preference
+localStorage.removeItem('theme')
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+enum Theme {
+    Light,
+    Dark
+}
 
 const App = () => {
-    const [theme,setTheme] = useState('system');
+    const [theme,setTheme] = useState<Theme>(Theme.Light);
+
     const options =[
         {
-            icon:"sunny-outline",
+            iconPath:"sun",
             text:'light'
         },
         {
-            icon: "moon",
+            iconPath: "moon",
             text: "dark",
         },
     ];
+    
     return(
         <section className="min-h-screen pt-8 dark:text-gray-100 dark:bg-slate-900 duration-100">
-            <div ClassName="max-w-3xl mx-auto px-5">
-                {options?.map((opt) => (
-                    <button key={opt.text} className="w-8 h-8 leading-9 text-xl rounded-full m-1 text-sky-600">
-                        <ion-icon name="sunny-outline"></ion-icon>
+            <div className="max-w-3xl mx-auto px-5">
+                {options.map((opt) => (
+                    <button 
+                        key={opt.text} 
+                        className="w-8 h-8 leading-9 text-xl rounded-full m-1 text-sky-600"
+                        onClick={() => {
+                            if (opt.text == "light") {
+                                setTheme(Theme.Light)
+                            } else if (opt.text == "dark") {
+                                setTheme(Theme.Dark)
+                            }
+                        }}
+                    >
+                        <img src={opt.iconPath} alt={opt.text}/>
                     </button>
-                    
-                )) }
-               
-                
+                ))}
             </div>
         </section>
     )
 }
+
+export default App;
