@@ -21,8 +21,6 @@ function App() {
     const [started, setStarted] = useState(false)
     const [mode, setMode] = useState<Mode>(Mode.Display)
 
-    // TODO Add sounds to notification.
-
     function handleModeChange() {
         if (mode == Mode.Display) {
             setMode(Mode.Edit)
