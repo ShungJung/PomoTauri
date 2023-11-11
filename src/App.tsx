@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import editIcon from "/icons/edit.svg";
 import cancelIcon from "/icons/cancel.svg";
@@ -10,9 +10,10 @@ import StatusSetter from "./components/StatusSetter";
 import Mode from "./types/Mode";
 import notify from "./utils/notify";
 
+
 function App() {
     const [slots, setSlots] = useState<Slot[]>([
-        { name: "Work", time: 25 },
+        { name: "Work", time: 69 },
         { name: "Rest", time: 5 },
     ]);
     const [currentSlot, setCurrentSlot] = useState(0)
@@ -20,8 +21,6 @@ function App() {
     const [time, setTime] = useState(slots[currentSlot].time)
     const [started, setStarted] = useState(false)
     const [mode, setMode] = useState<Mode>(Mode.Display)
-
-    // TODO Add sounds to notification.
 
     function handleModeChange() {
         if (mode == Mode.Display) {
@@ -33,7 +32,6 @@ function App() {
             setMode(Mode.Display)
         }
     }
-
     function handleStartChange() {
         if (!started) {
             const id = setInterval(() => {
@@ -150,6 +148,7 @@ function App() {
 
         </>
     )
+
 }
 
 export default App

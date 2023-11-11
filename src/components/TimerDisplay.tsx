@@ -17,7 +17,7 @@ function TimerDisplay({ time, mode, handleUpdateSlot }: TimerDisplayProps) {
                 ? <input 
                     type="text"
                     className="
-                        w-1/3
+                        w-1/2
                         text-[10rem] text-center
                     "
                     value={updatedTime}
