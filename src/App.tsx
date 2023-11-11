@@ -16,7 +16,7 @@ function App() {
         { name: "Rest", time: 5 },
     ]);
     const [currentSlot, setCurrentSlot] = useState(0)
-    const [intervalID, setIntervalID] = useState(0)
+    const [intervalID, setIntervalID] = useState<NodeJS.Timeout>()
     const [time, setTime] = useState(slots[currentSlot].time)
     const [started, setStarted] = useState(false)
     const [mode, setMode] = useState<Mode>(Mode.Display)
