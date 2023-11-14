@@ -7,6 +7,7 @@ import StatusSetter from "./components/StatusSetter";
 import Mode from "./types/Mode";
 import notify from "./utils/notify";
 import EditButton from "./components/EditButton";
+import DarkModeButton from "./components/DarkModeButton";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         { name: "Work", time: 69 },
         { name: "Rest", time: 5 },
     ]);
+    
     const [currentSlot, setCurrentSlot] = useState(0)
     const [intervalID, setIntervalID] = useState<NodeJS.Timeout>()
     const [time, setTime] = useState(slots[currentSlot].time)
@@ -60,7 +62,7 @@ function App() {
         setStarted(!started)
     }
 
-    function handleReset () {
+    function handleReset() {
         clearInterval(intervalID)
         setTime(slots[currentSlot].time)
         setStarted(false)
@@ -108,20 +110,10 @@ function App() {
     return (
         <>
             <div className="flex flex-row gap-10">
-                <EditButton 
+                <EditButton
                     mode={mode}
                     handleModeChange={handleModeChange}
-                />
-                {/* 
-                    TODO Browan, 
-
-                    Create a new file in Components called the Dark Mode button or the theme switcher or whateever. (end in tsx)
-                    In that file follow the patterns of the other tsx files in that folder and create the EditButton function.
-                    In that file you program the logic for switching themes.
-
-                    Goodluck, Shung Jung
-                */}
-            </div>
+            />
 
             <SlotsBar
                 slots={slots}
@@ -132,7 +124,7 @@ function App() {
                 handleDeleteSlot={handleDeleteSlot}
             />
 
-            <TimerDisplay 
+            <TimerDisplay
                 time={time}
                 mode={mode}
                 handleUpdateSlot={handleUpdateSlot}
@@ -146,6 +138,7 @@ function App() {
             />
 
         </>
+
     )
 
 }
