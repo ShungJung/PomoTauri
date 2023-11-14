@@ -1,19 +1,20 @@
 import sunIcon from "/icons/sun.svg";
 import moonIcon from "/icons/moon.svg";
-import Mode from "../types/Mode";
 
-interface EditButtonProps {
-    mode:Mode;
-    handleModeChange: () => void;
+import Theme from "../types/Theme";
+
+interface DarkModeButtonProps {
+    theme: Theme;
+    handleThemeChange: () => void;
 }
 
-function DarkModeButton({mode, handleModeChange}: EditButtonProps)
+function DarkModeButton({theme, handleThemeChange}: DarkModeButtonProps)
 {
     return (
-        <button onClick={handleModeChange}>
-            {mode == Mode.Display
+        <button onClick={handleThemeChange}>
+            {theme == Theme.Light
                 ? <img src={sunIcon} className="w-10 h-10" alt="Bright"/>
-                :<img src={moonIcon} className="w-10h-10" alt="Dark" />
+                : <img src={moonIcon} className="w-10h-10" alt="Dark" />
             }
         </button>
     )

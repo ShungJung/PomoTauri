@@ -1,14 +1,16 @@
 import { useState } from "react";
 
 import Slot from "./types/Slot";
+import Mode from "./types/Mode";
+import Theme from "./types/Theme";
+
 import TimerDisplay from "./components/TimerDisplay";
 import SlotsBar from "./components/SlotsBar";
 import StatusSetter from "./components/StatusSetter";
-import Mode from "./types/Mode";
-import notify from "./utils/notify";
 import EditButton from "./components/EditButton";
 import DarkModeButton from "./components/DarkModeButton";
 
+import notify from "./utils/notify";
 
 function App() {
     const [slots, setSlots] = useState<Slot[]>([
@@ -21,6 +23,7 @@ function App() {
     const [time, setTime] = useState(slots[currentSlot].time)
     const [started, setStarted] = useState(false)
     const [mode, setMode] = useState<Mode>(Mode.Display)
+    const [theme, setTheme] = useState<Theme>(Theme.Light)
 
     function handleModeChange() {
         if (mode == Mode.Display) {
@@ -32,6 +35,15 @@ function App() {
             setMode(Mode.Display)
         }
     }
+
+    function handleThemeChange() {
+        if (theme == Theme.Dark) {
+            setTheme(Theme.Light)
+        } else {
+            setTheme(Theme.Dark)
+        }
+    }
+
     function handleStartChange() {
         if (!started) {
             const id = setInterval(() => {
@@ -113,7 +125,13 @@ function App() {
                 <EditButton
                     mode={mode}
                     handleModeChange={handleModeChange}
-            />
+                />
+
+                <DarkModeButton 
+                    theme={theme}
+                    handleThemeChange={handleThemeChange}
+                />
+            </div>
 
             <SlotsBar
                 slots={slots}
@@ -136,7 +154,6 @@ function App() {
                 handleStartChange={handleStartChange}
                 handleReset={handleReset}
             />
-
         </>
 
     )
